@@ -1,0 +1,12 @@
+filebeat.prospectors:
+- type: log
+  enabled: true
+  paths:
+    - /var/nginx/access.log
+  fields:
+    log_topics: gt_third_ngx
+    registry_file: /usr/share/filebeat/data/registry.log
+output.kafka:
+  enabled: true
+  hosts: ["kafka1:9092","kafka2:9092","kafka3:9092"]
+  topic: '%{[fields][log_topics]}'

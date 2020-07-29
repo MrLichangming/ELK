@@ -1,0 +1,16 @@
+# docker-compose up -d 启动
+
+version: '3'
+services:
+   filebeat:
+      image: docker.elastic.co/beats/filebeat:6.4.1
+      container_name: filebeat
+      restart: always
+      extra_hosts:
+         - "kafka1:34.80.100.168"
+         - "kafka2:34.80.35.134"
+         - "kafka3:34.80.101.17"
+      volumes:
+         - /var//nginx/:/var/nginx/
+         - /opt/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+         - /opt/filebeat/data/:/usr/share/filebeat/data/

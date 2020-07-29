@@ -1,0 +1,25 @@
+version: "3.6"
+networks:
+  net:
+    driver: overlay
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.0.0/16
+services:
+  kibana:
+    image: hub.dayu-boss.com/other/kibana:6.6.1
+    hostname: kibana
+    networks:
+      - net
+    ports:
+      - "5601:5601"
+    deploy:
+      placement:
+        constraints: [node.labels.elk == 1]
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - /opt/kibana/conf/kibana.yml:/opt/kibana-6.6.1-linux-x86_64/config/kibana.yml
+      - /var/log/kibana:/var/log/kibana

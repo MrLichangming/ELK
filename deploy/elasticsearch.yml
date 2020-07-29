@@ -1,0 +1,72 @@
+version: "3.6"
+networks:
+  net:
+    driver: overlay
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.0.0/16
+
+services:
+  elasticsearch1:
+    image: elasticsearch:6.6.2
+    hostname: elasticsearch1
+    networks:
+      - net
+    ports:
+      - '9200:9200'
+    deploy:
+      placement:
+        constraints: [node.labels.elk == 1]
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - /opt/elasticsearch/conf/elasticsearch-1.yml:/opt/elasticsearch-6.6.2/config/elasticsearch.yml
+      - /opt/elasticsearch/conf/jvm.options:/opt/elasticsearch-6.6.2/config/jvm.options
+      - /var/log/elasticsearch:/var/log/elasticsearch
+      - /opt/elasticsearch/data:/opt/elasticsearch-6.6.2/data
+
+  elasticsearch2:
+    image: elasticsearch:6.6.2
+    hostname: elasticsearch2
+    networks:
+      - net
+    deploy:
+      placement:
+        constraints: [node.labels.elk == 2]
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - /opt/elasticsearch/conf/elasticsearch-2.yml:/opt/elasticsearch-6.6.2/config/elasticsearch.yml
+      - /opt/elasticsearch/conf/jvm.options:/opt/elasticsearch-6.6.2/config/jvm.options
+      - /opt/elasticsearch/data:/opt/elasticsearch-6.6.2/data
+      - /var/log/elasticsearch:/var/log/elasticsearch
+
+  elasticsearch3:
+    image: elasticsearch:6.6.2
+    hostname: elasticsearch3
+    networks:
+      - net
+    deploy:
+      placement:
+        constraints: [node.labels.elk == 3]
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - /opt/elasticsearch/conf/elasticsearch-3.yml:/opt/elasticsearch-6.6.1/config/elasticsearch.yml
+      - /opt/elasticsearch/conf/jvm.options:/opt/elasticsearch-6.6.1/config/jvm.options
+      - /opt/elasticsearch/data:/opt/elasticsearch-6.6.1/data
+      - /var/log/elasticsearch:/var/log/elasticsearch
+
+  es-head:
+    image: mobz/elasticsearch-head:5
+    networks:
+      - net
+    ports:
+      - "9100:9100"
+    deploy:
+      placement:
+        constraints: [node.labels.elk == 1]
+      restart_policy:
+        condition: on-failure

@@ -1,0 +1,15 @@
+# 非方括号
+NOSQUARE [^\[\]]+
+# 非"|"
+NOVERTICAL [^|]+
+PAY_NGX %{NOTSPACE:hostname}: \[%{TIMESTAMP_ISO8601:time_local}\] %{NOTSPACE:status:int} %{NOTSPACE:uuid} %{NOTSPACE:X_system} - \[%{NOSQUARE:upstream_addr}\] %{NUMBER:request_time:float} (%{NUMBER:upstraem_response_time}|-) %{NOTSPACE:Method} (%{USERNAME:proxy_host}|-) %{URIPATH:uri}(%{URIPARAM:uri_param})? %{NUMBER:body_bytes_sent:int} \| %{IPV4:remote_addr} \| -
+
+
+# game-api  game-api-service
+MYUUID (%{NUMBER:siteid}-%{WORD:idc_num}-%{HOSTNAME}|-)
+GAMEAPIPRE %{NOVERTICAL:d}\|%{NOVERTICAL:d}\|%{MYUUID:uuid}
+GAMEAPISUF %{NOVERTICAL:label}\|%{INT:api_id}\|%{NOVERTICAL:tr_type}\|%{NOVERTICAL:describe}\|%{NOVERTICAL:tr_status}\|%{NOVERTICAL:order_num}\|%{NOVERTICAL:args}\|%{NOVERTICAL:return}\|%{NOVERTICAL:err_info}
+GAMEAPI %{TIMESTAMP_ISO8601:time_local} %{LOGLEVEL:level} \[%{NOSQUARE}\] %{NOTSPACE:hostname} %{NOTSPACE} %{NOTSPACE} %{GAMEAPIPRE} %{GAMEAPISUF}
+
+# gt third
+GT_THIRD \[%{TIMESTAMP_ISO8601:time_local}\] %{NOTSPACE:status:int} %{NOTSPACE:uuid} %{NOTSPACE:X_system} %{NOTSPACE:hostname} %{IPORHOST:remote_addr} \[%{NOSQUARE:upstream_addr}\] %{NUMBER:request_time:float} (%{NUMBER:upstraem_response_time}|-) %{NOTSPACE:Method} %{NOTSPACE:proxy_host} %{URIPATH:uri}(%{URIPARAM:uri_param})? %{NUMBER:body_bytes_sent:int} \| %{NOTSPACE:X_debug}

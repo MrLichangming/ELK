@@ -1,0 +1,68 @@
+version: "3.6"
+networks:
+  net:
+    driver: overlay
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.0.0/16
+
+services:
+  kafka1:
+    image: kafka:2.0.0
+    hostname: kafka1
+    networks:
+      - net
+    deploy:
+      placement:
+        constraints: [node.labels.elk == 1]
+      restart_policy:
+        condition: on-failure
+    ports:
+      - target: 9092
+        published: 9092
+        protocol: tcp
+        mode: host
+    volumes:
+      - /var/log/kafka/:/opt/kafka_2.12-2.0.0/logs
+      - /opt/kafka/conf/server.properties:/opt/kafka_2.12-2.0.0/config/server.properties
+
+  kafka2:
+    image: kafka:2.0.0
+    hostname: kafka2
+    networks:
+      - net
+    deploy:
+      placement:
+        constraints: [node.labels.elk == 2]
+      restart_policy:
+        condition: on-failure
+    ports:
+      - target: 9092
+        published: 9092
+        protocol: tcp
+        mode: host
+    volumes:
+      - /var/log/kafka/:/opt/kafka_2.12-2.0.0/logs
+      - /opt/kafka/conf/server.properties:/opt/kafka_2.12-2.0.0/config/server.properties
+
+  kafka3:
+    image: kafka:2.0.0
+    hostname: kafka3
+    networks:
+      - net
+    deploy:
+      placement:
+        constraints: [node.labels.elk == 3]
+      restart_policy:
+        condition: on-failure
+    ports:
+      - target: 9092
+        published: 9092
+        protocol: tcp
+        mode: host
+    volumes:
+      - /var/log/kafka/:/opt/kafka_2.12-2.0.0/logs
+      - /opt/kafka/conf/server.properties:/opt/kafka_2.12-2.0.0/config/server.properties
+
